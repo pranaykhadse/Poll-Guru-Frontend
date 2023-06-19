@@ -6,13 +6,15 @@ import RightView from './ShowResultComponents/RightView/RightView'
 
 function ShowResult() {
     let intervalId = useRef(null)
-    let [pollData, setPollData] = useState([])
+    let [payload,setPayload] = useState([])
     let [pollNo, setPollNo] = useState(1)
     let [timer, setTimer] = useState(null)
     let [windowHeight, setWindowHeight] = useState(window.innerHeight)
     let [windowWidth, setWindowWidth] = useState(window.innerWidth)
     let [windowResize, setWindowResize] = useState(false)
     let [isContinue,setIsContinue] = useState(false)
+
+    console.log(payload)
 
     if (timer == -1) {
         clearInterval(intervalId.current)
@@ -66,13 +68,18 @@ function ShowResult() {
         setIsContinue(false)
     }
 
-    useEffect(() => {
-        axios.get(`http://localhost:3000/poll?pin=123456`).then((res) => {
-            setPollData(res.data)
-        }).catch((err) => {
-            console.log(err)
+    useEffect(()=>{
+        fetch('https://staging.gamificationguru.com/api/web/poll-guru/index?id=2374&user_id=21',{
+            method:'GET',
+            headers:{
+                'Content-Type':'application/json'
+            }
+        }).then((res)=>{
+            return res.json()
+        }).then((res)=>{
+            setPayload(res.payload)
         })
-    }, [])
+    },[])
 
     // useEffect(()=>{
     //     setWindowHeight(window.innerHeight)
@@ -88,8 +95,8 @@ function ShowResult() {
 
     return (
         <Box sx={{ color: 'white', fontSize: '24px', fontFamily: 'verdana', height: '100vh', overflow: 'scroll' }}>
-            <LeftView pollData={pollData} pollNo={pollNo} windowWidth={windowWidth} windowHeight={windowHeight} handlePollNo={handlePollNo} handleTenSecTimer={handleTenSecTimer} handleThirtySecTimer={handleThirtySecTimer} handleSixtySecTimer={handleSixtySecTimer} handleHide={handleHide} />
-            <RightView pollData={pollData} pollNo={pollNo} timer={timer} isContinue={isContinue} handlePrevious={handlePrevious} handleContinue={handleContinue} />
+            <LeftView payload={payload} pollNo={pollNo} windowWidth={windowWidth} windowHeight={windowHeight} handlePollNo={handlePollNo} handleTenSecTimer={handleTenSecTimer} handleThirtySecTimer={handleThirtySecTimer} handleSixtySecTimer={handleSixtySecTimer} handleHide={handleHide} />
+            <RightView payload={payload} pollNo={pollNo} timer={timer} isContinue={isContinue} handlePrevious={handlePrevious} handleContinue={handleContinue} />
         </Box>
     )
 }

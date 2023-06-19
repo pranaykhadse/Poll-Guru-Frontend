@@ -2,11 +2,11 @@ import { Box } from "@mui/material"
 
 
 
-function Pin({pollData}) {
+function Pin({payload}) {
     return (
 
         <Box sx={{ textAlign: 'left' }}>
-            Pin: {pollData[0]?.pin}
+            Pin: {payload['id']}
         </Box>
     )
 }
